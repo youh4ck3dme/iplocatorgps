@@ -66,6 +66,16 @@ describe('POST /api/location handler', () => {
     expect(axios.post).not.toHaveBeenCalled();
   });
 
+  it('increments pointsStored for repeated writes on same token', async () => {
+    await handler({ method: 'POST', body: { token: 'same', lat: 48.1, lng: 17.1 } }, createRes());
+    const res = createRes();
+
+    await handler({ method: 'POST', body: { token: 'same', lat: 48.2, lng: 17.2 } }, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.payload.pointsStored).toBe(2);
+  });
+
   it('sends telegram message when env is configured', async () => {
     process.env.TELEGRAM_BOT_TOKEN = 'bot-token';
     process.env.TELEGRAM_CHAT_ID = 'chat-id';
@@ -81,5 +91,17 @@ describe('POST /api/location handler', () => {
     expect(res.statusCode).toBe(200);
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post.mock.calls[0][0]).toContain('https://api.telegram.org/botbot-token/sendMessage');
+  });
+
+  it('does not fail request when telegram notification throws', async () => {
+    process.env.TELEGRAM_BOT_TOKEN = 'bot-token';
+    process.env.TELEGRAM_CHAT_ID = 'chat-id';
+    axios.post.mockRejectedValueOnce(new Error('telegram down'));
+
+    const res = createRes();
+    await handler({ method: 'POST', body: { token: 'x', lat: 1, lng: 2 } }, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.payload.ok).toBe(true);
   });
 });

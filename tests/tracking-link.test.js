@@ -15,4 +15,10 @@ describe('createTrackingLink', () => {
       'https://example.com/token-1?token=token-1'
     );
   });
+
+  it('supports localhost origin with port', () => {
+    expect(createTrackingLink('http://localhost:3000', 'x')).toBe(
+      'http://localhost:3000/x?token=x'
+    );
+  });
 });
