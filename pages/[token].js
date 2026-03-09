@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { Circle, GoogleMap, Marker, Polyline, useJsApiLoader } from '@react-google-maps/api';
+import { Circle, GoogleMap, Marker, AdvancedMarker, Polyline, useJsApiLoader } from '@react-google-maps/api';
 
 const mapContainerStyle = { width: '100%', height: '60vh' };
 const DEFAULT_GEOFENCE_RADIUS = 80;
@@ -435,8 +435,13 @@ export default function LocationPage() {
       {error ? <p style={{ color: 'red' }}>{error}</p> : null}
 
       {isLoaded && displayPoint ? (
-        <GoogleMap mapContainerStyle={mapContainerStyle} center={displayPoint} zoom={17}>
-          <Marker position={displayPoint} />
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={displayPoint}
+          zoom={17}
+          options={{ mapId: 'DEMO_MAP_ID' }}
+        >
+          <AdvancedMarker position={displayPoint} />
           {trackPoints.length > 1 ? (
             <Polyline
               path={trackPoints}

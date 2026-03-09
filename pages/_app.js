@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }) {
         <meta name="theme-color" content="#0b1220" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icon-192.svg" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </Head>
       <Component {...pageProps} />
     </>

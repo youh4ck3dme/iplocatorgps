@@ -4,7 +4,7 @@ set -euo pipefail
 APP_DIR="${APP_DIR:-/var/www/iplocatorgps}"
 BRANCH="${BRANCH:-main}"
 APP_NAME="${APP_NAME:-iplocatorgps}"
-PORT="${PORT:-3000}"
+PORT="${PORT:-7676}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-http://127.0.0.1:${PORT}/api/health}"
 HEALTHCHECK_RETRIES="${HEALTHCHECK_RETRIES:-12}"
 HEALTHCHECK_DELAY="${HEALTHCHECK_DELAY:-2}"

@@ -4,7 +4,7 @@ module.exports = {
       name: 'iplocatorgps',
       cwd: '/var/www/iplocatorgps',
       script: 'node_modules/next/dist/bin/next',
-      args: 'start -p 3000',
+      args: 'start -p 7676',
       env: {
         NODE_ENV: 'production'
       }
