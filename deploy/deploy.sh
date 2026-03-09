@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="${APP_DIR:-/var/www/location-tracker}"
+APP_DIR="${APP_DIR:-/var/www/iplocatorgps}"
 BRANCH="${BRANCH:-main}"
-APP_NAME="${APP_NAME:-location-tracker}"
+APP_NAME="${APP_NAME:-iplocatorgps}"
 PORT="${PORT:-3000}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-http://127.0.0.1:${PORT}/api/health}"
 HEALTHCHECK_RETRIES="${HEALTHCHECK_RETRIES:-12}"

@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: 'location-tracker',
-      cwd: '/var/www/location-tracker',
+      name: 'iplocatorgps',
+      cwd: '/var/www/iplocatorgps',
       script: 'node_modules/next/dist/bin/next',
       args: 'start -p 3000',
       env: {
