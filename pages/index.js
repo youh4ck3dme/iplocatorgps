@@ -1,15 +1,13 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { createTrackingLink } from '../lib/trackingLink';
 
 export default function HomePage() {
-  const trackingLink = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return '';
-    }
+  const [trackingLink, setTrackingLink] = useState('');
 
+  useEffect(() => {
     const token = uuidv4();
-    return createTrackingLink(window.location.origin, token);
+    setTrackingLink(createTrackingLink(window.location.origin, token));
   }, []);
 
   return (

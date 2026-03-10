@@ -81,20 +81,14 @@ export default function LocationPage() {
 
   const watchIdRef = useRef(null);
 
-  const trackerLink = useMemo(() => {
-    if (typeof window === 'undefined' || !token) {
-      return '';
+  const [trackerLink, setTrackerLink] = useState('');
+  const [viewerLink, setViewerLink] = useState('');
+
+  useEffect(() => {
+    if (token) {
+      setTrackerLink(`${window.location.origin}/${token}`);
+      setViewerLink(`${window.location.origin}/${token}?view=1`);
     }
-
-    return `${window.location.origin}/${token}`;
-  }, [token]);
-
-  const viewerLink = useMemo(() => {
-    if (typeof window === 'undefined' || !token) {
-      return '';
-    }
-
-    return `${window.location.origin}/${token}?view=1`;
   }, [token]);
 
   const stopTracking = useCallback(() => {
