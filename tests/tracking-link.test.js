@@ -17,8 +17,8 @@ describe('createTrackingLink', () => {
   });
 
   it('supports localhost origin with port', () => {
-    expect(createTrackingLink('http://localhost:3000', 'x')).toBe(
-      'http://localhost:3000/x?token=x'
+    expect(createTrackingLink('http://localhost:9999', 'x')).toBe(
+      'http://localhost:9999/x?token=x'
     );
   });
 });
