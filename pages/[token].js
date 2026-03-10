@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+import Script from 'next/script';
 
 const LeafletMap = dynamic(() => import('../lib/LeafletMap'), { ssr: false });
 
@@ -326,6 +327,10 @@ export default function LocationPage() {
 
   return (
     <main style={{ padding: '1rem', fontFamily: 'Arial, sans-serif' }}>
+      <Script
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        onLoad={() => console.log('Google Maps API Loaded')}
+      />
       <h1>Mobile Location Capture</h1>
       <p>Status: {status}</p>
 

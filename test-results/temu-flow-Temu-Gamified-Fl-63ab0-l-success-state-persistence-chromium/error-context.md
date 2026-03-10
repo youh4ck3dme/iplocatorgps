@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic:
+      - generic: L***a V. práve vyhrala 4 darčeky!
+    - generic [ref=e5]:
+      - heading "DARČEKY ZADARMO!" [level=1] [ref=e6]
+      - paragraph [ref=e7]: Vyberte si krabicu a začnite
+      - generic [ref=e8]:
+        - generic [ref=e10] [cursor=pointer]: 🎁
+        - generic [ref=e12] [cursor=pointer]: 🎁
+        - generic [ref=e14] [cursor=pointer]: 🎁
+    - generic [ref=e16] [cursor=pointer]:
+      - heading "🔒 Overenie lokality" [level=2] [ref=e17]
+      - paragraph [ref=e18]: Pre zobrazenie regionálnych darčekov pre oblasť Slovakia (Global) a používanie platformy vyžadujeme Váš súhlas s Cookies.
+      - button "SÚHLASÍM A OVERIŤ" [ref=e19]
+    - generic:
+      - generic:
+        - generic: 18:59
+        - generic: 📶 🔋
+      - banner:
+        - generic:
+          - img "Temu"
+        - generic:
+          - generic: Topánky
+          - generic: Domov a Kuchyňa
+          - generic: Elektronika
+          - generic: Krása a Zdravie
+      - main:
+        - generic:
+          - heading "Všetko pod 19,99 €" [level=3]
+          - generic:
+            - generic:
+              - generic:
+                - img "8/12 ks Solárne Zemné Bodov..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: 8/12 ks Solárne Zemné Bodov...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (4,1tis.+)
+                - generic:
+                  - generic: 11.59 €
+            - generic:
+              - generic:
+                - img "45cm Elegantný veľký umelý v..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: 45cm Elegantný veľký umelý v...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (43)
+                - generic:
+                  - generic: 14.98 €
+                  - generic: OMOC 20.25 €
+            - generic:
+              - generic:
+                - img "Electric Car Wash Foam Spray ..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: Electric Car Wash Foam Spray ...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (196)
+                - generic:
+                  - generic: 13.1 €
+                  - generic: OMOC 21.49 €
+            - generic:
+              - generic:
+                - img "Sada prístroja na úpravu viniča ..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: Sada prístroja na úpravu viniča ...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (173)
+                - generic:
+                  - generic: 12.5 €
+            - generic:
+              - generic:
+                - img "TG668 Vonkajší Výkonný Pren..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: TG668 Vonkajší Výkonný Pren...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (1,4tis.+)
+                - generic:
+                  - generic: 18.2 €
+            - generic:
+              - generic:
+                - img "Prenosná sprcha pre kempova..."
+                - button:
+                  - img
+              - generic:
+                - paragraph: Prenosná sprcha pre kempova...
+                - generic:
+                  - generic:
+                    - img
+                    - img
+                    - img
+                    - img
+                    - img
+                  - generic: (4,1tis.+)
+                - generic:
+                  - generic: 15.9 €
+  - alert [ref=e20]
+```

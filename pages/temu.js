@@ -110,9 +110,10 @@ export default function TemuPage() {
             // First spin - almost there
             setWheelAngle(1800); // multiple rotations
             setTimeout(() => {
+                console.log("[TEST] Spin 1 callback executing");
                 setProgressWidth('98%');
                 setRemainingCost('0.02');
-                alert("EŠTE JEDEN HOD! Ste tak blízko!");
+                if (typeof window !== 'undefined' && !window.TEST_MODE) alert("EŠTE JEDEN HOD! Ste tak blízko!");
                 setSpinCount(1);
                 setIsSpinning(false);
             }, 4100);
