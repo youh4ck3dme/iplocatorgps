@@ -31,7 +31,7 @@ rollback() {
   npm run build
 
   if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-    pm2 reload "$APP_NAME" --update-env
+    PORT="$PORT" pm2 start ecosystem.config.cjs --only "$APP_NAME" --update-env
   else
     PORT="$PORT" pm2 start ecosystem.config.cjs --only "$APP_NAME" --update-env
   fi
@@ -69,7 +69,7 @@ npm run build
 
 echo "[deploy] reloading pm2"
 if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
-  pm2 reload "$APP_NAME" --update-env
+  PORT="$PORT" pm2 start ecosystem.config.cjs --only "$APP_NAME" --update-env
 else
   PORT="$PORT" pm2 start ecosystem.config.cjs --only "$APP_NAME" --update-env
 fi
