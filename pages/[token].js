@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { Circle, GoogleMap, Marker, AdvancedMarker, Polyline, useJsApiLoader } from '@react-google-maps/api';
+import dynamic from 'next/dynamic';
+
+const LeafletMap = dynamic(() => import('../lib/LeafletMap'), { ssr: false });
 
 const mapContainerStyle = { width: '100%', height: '60vh' };
 const DEFAULT_GEOFENCE_RADIUS = 80;
@@ -78,10 +80,6 @@ export default function LocationPage() {
   const [replayIndex, setReplayIndex] = useState(0);
 
   const watchIdRef = useRef(null);
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
-  });
 
   const trackerLink = useMemo(() => {
     if (typeof window === 'undefined' || !token) {
@@ -434,28 +432,17 @@ export default function LocationPage() {
 
       {error ? <p style={{ color: 'red' }}>{error}</p> : null}
 
-      {isLoaded && displayPoint ? (
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={displayPoint}
-          zoom={17}
-          options={{ mapId: 'DEMO_MAP_ID' }}
-        >
-          <AdvancedMarker position={displayPoint} />
-          {trackPoints.length > 1 ? (
-            <Polyline
-              path={trackPoints}
-              options={{ strokeColor: '#2563eb', strokeOpacity: 0.9, strokeWeight: 4 }}
-            />
-          ) : null}
-          {geofenceEnabled && geofenceCenter ? (
-            <Circle
-              center={geofenceCenter}
-              radius={geofenceRadius}
-              options={{ fillColor: '#f59e0b', fillOpacity: 0.15, strokeColor: '#f59e0b', strokeWeight: 2 }}
-            />
-          ) : null}
-        </GoogleMap>
+      {displayPoint ? (
+        <div style={mapContainerStyle}>
+          <LeafletMap
+            center={displayPoint}
+            zoom={17}
+            trackPoints={trackPoints}
+            geofenceEnabled={geofenceEnabled}
+            geofenceCenter={geofenceCenter}
+            geofenceRadius={geofenceRadius}
+          />
+        </div>
       ) : (
         <p>Map will appear after first GPS fix.</p>
       )}

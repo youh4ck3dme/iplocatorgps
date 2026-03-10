@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
+import 'leaflet/dist/leaflet.css';
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js').catch(() => { });
       });
     }
   }, []);
