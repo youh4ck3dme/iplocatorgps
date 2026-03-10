@@ -1,79 +1,77 @@
 # Location Tracker (Next.js)
 
-## Setup
-1. Copy `.env.local.example` to `.env.local`.
-2. Fill `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`.
-3. Optional: set `LOCATION_DB_PATH` (default: `./data/location-tracker.sqlite`).
-4. Install dependencies:
+Tento projekt je pokročilý nástroj na sledovanie GPS polohy v reálnom čase s podporou PWA, Telegram notifikácií a podrobným testovaním.
+
+## 📍 Projektové informácie
+- **Lokálna cesta**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps`
+- **Predvolený port**: `9999`
+
+## 🚀 Rýchly štart
+1. **Inštalácia balíčkov**:
    ```bash
    npm install
    ```
-5. Run:
+2. **Konfigurácia**:
+   Skopíruj `.env.local.example` do `.env.local` a vyplň potrebné údaje (pozri sekciu Telegram).
+3. **Spustenie vývojového servera**:
    ```bash
    npm run dev
    ```
+   Web bude dostupný na: [http://localhost:9999](http://localhost:9999)
 
-## Storage
-- Location points are persisted in SQLite.
-- Default DB file: `data/location-tracker.sqlite`.
-- API session replay reads from SQLite, so session history survives server restart.
+## 🗺️ Mapa (Leaflet)
+Projekt bol migrovaný z Google Maps na **Leaflet (OpenStreetMap)**. 
+- Nie je potrebný žiadny Google API kľúč.
+- Mapy sú úplne zadarmo a načítavajú sa automaticky.
 
-## Tests
-```bash
-npm test
-```
+## 🤖 Telegram Notifikácie
+Aby si dostával upozornenia o polohe do mobilu:
+1. **BotToken**: Získaj od **@BotFather** na Telegrame (príkaz `/newbot`).
+2. **ChatID**: Získaj od **@userinfobot** (napíše ti tvoje číselné ID).
+3. Zapíš do `.env.local`:
+   ```env
+   TELEGRAM_BOT_TOKEN=tvoj_token
+   TELEGRAM_CHAT_ID=tvoje_id
+   ```
 
-## PWA
+## 🧪 Testovanie (67 testov)
+Projekt obsahuje komplexnú testovaciu suitu rozdelenú do viacerých vrstiev.
+
+### 1. Logické a integračné testy (Vitest)
+Tieto testy overujú matematické výpočty, databázu a API integritu.
+- **Príkaz na spustenie**: `npm test`
+- **Umiestnenie testov**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps\tests\`
+  - `utils.test.js`: Výpočty vzdialenosti a ETA.
+  - `db-integration.test.js`: Práca s SQLite databázou.
+  - `api-integrity.test.js`: Validácia vstupov a bezpečnosť API.
+  - `location-api.test.js`, `session-api.test.js` atď.
+
+### 2. End-to-End testy (Playwright)
+Skutočné testy v prehliadači, ktoré klikajú na tlačidlá a overujú UI.
+- **Príkaz na spustenie**: `npx playwright test`
+- **Umiestnenie testov**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps\tests\e2e.spec.js`
+- **Konfigurácia**: `playwright.config.js`
+
+## 📦 Úložisko
+- Polohy sú ukladané v SQLite databáze.
+- **Cesta k DB**: `data/location-tracker.sqlite` (definované v `LOCATION_DB_PATH`).
+
+## 📱 PWA (Progresívna webová aplikácia)
+- Aplikáciu je možné inštalovať na plochu mobilu.
 - Manifest: `public/manifest.json`
 - Service worker: `public/sw.js`
-- Offline page: `public/offline.html`
-- App registration/meta: `pages/_app.js`
 
-## Deploy to VPS (PM2 + Nginx)
-1. Upload project to VPS path `/var/www/location-tracker`.
-2. Create production env file `/var/www/location-tracker/.env.local`.
-3. Install runtime tools once:
-   ```bash
-   npm i -g pm2
-   sudo apt update && sudo apt install -y nginx certbot python3-certbot-nginx
-   ```
-4. Prepare PM2 app name in `ecosystem.config.cjs` as `location-tracker`.
-5. Deploy by script:
-   ```bash
-   cd /var/www/location-tracker
-   chmod +x deploy/deploy.sh
-   APP_DIR=/var/www/location-tracker BRANCH=main APP_NAME=location-tracker PORT=3000 ./deploy/deploy.sh
-   ```
-6. Configure Nginx:
-   - Copy `deploy/nginx-location-tracker.conf` to `/etc/nginx/sites-available/location-tracker`
-   - Set `server_name` to your domain
-   - Enable site:
-     ```bash
-     sudo ln -s /etc/nginx/sites-available/location-tracker /etc/nginx/sites-enabled/location-tracker
-     sudo nginx -t
-     sudo systemctl reload nginx
-     ```
-7. Enable HTTPS:
-   ```bash
-   sudo certbot --nginx -d tracker.your-domain.com
-   ```
+## 🛠️ Nasadenie na VPS
+Projekt je pripravený na nasadenie cez PM2 a Nginx.
+1. Script na nasadenie: `deploy/deploy.sh`
+2. PM2 konfigurácia: `ecosystem.config.cjs` (nastavené na port 9999)
+3. Nginx konfigurácia: `deploy/nginx-location-tracker.conf`
 
-## Routes
-- `/` generates a tracking link
-- `/[token]` starts precise tracking and displays Google Map
-- `/[token]?view=1` live viewer mode (room-style read-only tracking)
-- `POST /api/location` receives location payloads and persists to SQLite
-- `GET /api/session/:token` returns session points for replay/viewers
-- `GET /api/session/:token/export?format=json|gpx` exports session history
-- `GET /api/health` healthcheck endpoint
+## 🔗 Trasy (Routes)
+- `/`: Generovanie unikátneho trackovacieho linku.
+- `/[token]`: Stránka pre mobilné zariadenie (odosielanie GPS).
+- `/[token]?view=1`: Viewer móde (sledovanie live na mape).
+- `GET /api/session/[token]/export?format=gpx`: Export trasy do GPX.
 
-## Advanced features
-- Geofence circle with exceed alert
-- ETA estimate to custom target coordinates
-- Battery-aware tracking profile (auto lowers GPS aggressiveness on low battery)
-- Session replay controls from captured trail
-- Live share room via tokenized viewer link with auto-refresh
-
-## Notes
-- Use HTTPS for geolocation and PWA installability.
-- Request tracking only with explicit consent.
+---
+*Poznámka: Pre fungovanie GPS a PWA je na produkcii nutné použiť HTTPS!*

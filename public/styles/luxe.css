@@ -1,0 +1,99 @@
+.luxe-container {
+    background: #011611;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+.luxe-orb {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.15) 0%, transparent 70%);
+    filter: blur(40px);
+    z-index: 0;
+    top: 15%;
+}
+
+.luxe-logo {
+    font-family: 'Times New Roman', serif;
+    letter-spacing: 0.3em;
+    color: #e2c08d;
+    text-transform: uppercase;
+    margin-top: 1rem;
+}
+
+.luxe-heading {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(180deg, #fff 0%, #ff8c00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.luxe-glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 140, 0, 0.15);
+    border-radius: 30px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    z-index: 20;
+    margin-bottom: 2rem;
+}
+
+.luxe-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(226, 192, 141, 0.3);
+    border-radius: 15px;
+    padding: 1rem 1.25rem;
+    color: white;
+    margin-bottom: 1rem;
+    outline: none;
+    font-size: 1rem;
+}
+
+.luxe-input:focus {
+    border-color: #ff8c00;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.luxe-button {
+    width: 100%;
+    background: linear-gradient(180deg, #ff8c00, #f97316);
+    color: white;
+    font-weight: 800;
+    padding: 1.25rem;
+    border-radius: 50px;
+    border: 1px solid #e2c08d;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3);
+    cursor: pointer;
+}
+
+.luxe-button:active {
+    transform: scale(0.97);
+}
+
+.luxe-status-bar {
+    width: 100%;
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}

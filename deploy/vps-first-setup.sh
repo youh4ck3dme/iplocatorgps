@@ -4,7 +4,7 @@ set -euo pipefail
 DOMAIN="${DOMAIN:-tracker.your-domain.com}"
 APP_DIR="${APP_DIR:-/var/www/iplocatorgps}"
 REPO_URL="${REPO_URL:-https://github.com/youh4ck3dme/iplocatorgps.git}"
-BRANCH="${BRANCH:-main}"
+BRANCH="${BRANCH:-devtests}"
 
 sudo apt update
 sudo apt install -y git curl nginx certbot python3-certbot-nginx
@@ -36,14 +36,14 @@ if [ ! -f .env.local ]; then
 fi
 
 chmod +x deploy/deploy.sh
-APP_DIR="$APP_DIR" BRANCH="$BRANCH" APP_NAME="iplocatorgps" PORT=7676 ./deploy/deploy.sh
+APP_DIR="$APP_DIR" BRANCH="$BRANCH" APP_NAME="iplocatorgps" PORT=9999 ./deploy/deploy.sh
 
 sudo tee /etc/nginx/sites-available/iplocatorgps >/dev/null <<EOF
 server {
     server_name ${DOMAIN};
 
     location / {
-        proxy_pass http://127.0.0.1:7676;
+        proxy_pass http://127.0.0.1:9999;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';

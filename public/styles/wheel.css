@@ -1,0 +1,76 @@
+:root {
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    #16a34a33 0deg,
+    #05966933 55deg,
+    #10b98133 120deg,
+    #34d39933 160deg,
+    transparent 360deg
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.wheel-container {
+  background: #0f172a;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.wheel-container::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: var(--primary-glow);
+  filter: blur(45px);
+  z-index: 0;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  z-index: 10;
+}
+
+.spin-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.spin-button:active {
+  transform: scale(0.95);
+}
+
+.spin-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wheel-svg {
+  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.2));
+}
