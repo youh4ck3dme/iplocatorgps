@@ -8,31 +8,7 @@ const LeafletMap = dynamic(() => import('../lib/LeafletMap'), { ssr: false });
 const mapContainerStyle = { width: '100%', height: '60vh' };
 const DEFAULT_GEOFENCE_RADIUS = 80;
 
-function distanceBetweenMeters(a, b) {
-  const toRad = (value) => (value * Math.PI) / 180;
-  const earthRadius = 6371000;
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-
-  const aa =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(aa), Math.sqrt(1 - aa));
-  return earthRadius * c;
-}
-
-function distanceForPath(points) {
-  if (points.length < 2) {
-    return 0;
-  }
-
-  let total = 0;
-  for (let i = 1; i < points.length; i += 1) {
-    total += distanceBetweenMeters(points[i - 1], points[i]);
-  }
-  return total;
-}
+import { distanceBetweenMeters, distanceForPath, calculateEtaMinutes } from '../lib/geoUtils';
 
 export default function LocationPage() {
   const router = useRouter();
@@ -177,13 +153,7 @@ export default function LocationPage() {
         return;
       }
 
-      if (typeof speed !== 'number' || speed <= 0.5) {
-        setEtaMinutes(null);
-        return;
-      }
-
-      const meters = distanceBetweenMeters(point, { lat, lng });
-      setEtaMinutes((meters / speed) / 60);
+      setEtaMinutes(calculateEtaMinutes(point, { lat, lng }, speed));
     },
     [targetLat, targetLng]
   );

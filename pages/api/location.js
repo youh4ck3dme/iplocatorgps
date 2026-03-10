@@ -17,7 +17,13 @@ export default async function handler(req, res) {
     deviceInfo = {}
   } = req.body || {};
 
-  if (!token || typeof lat !== 'number' || typeof lng !== 'number') {
+  if (
+    !token ||
+    typeof lat !== 'number' ||
+    typeof lng !== 'number' ||
+    lat < -90 || lat > 90 ||
+    lng < -180 || lng > 180
+  ) {
     return res.status(400).json({ error: 'Invalid payload' });
   }
 
