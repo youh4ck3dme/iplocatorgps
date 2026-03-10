@@ -59,7 +59,7 @@ else
 fi
 
 echo "[deploy] installing dependencies"
-npm ci
+npm install --legacy-peer-deps
 
 echo "[deploy] running tests"
 npm test
