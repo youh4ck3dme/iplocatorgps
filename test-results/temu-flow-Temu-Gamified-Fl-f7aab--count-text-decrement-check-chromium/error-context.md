@@ -4,7 +4,7 @@
 - generic [active] [ref=e1]:
   - generic [ref=e3]:
     - generic:
-      - generic: L***a V. práve vyhrala 4 darčeky!
+      - generic: A***x B. práve vyhrala 4 darčeky!
     - generic [ref=e5]:
       - heading "DARČEKY ZADARMO!" [level=1] [ref=e6]
       - paragraph [ref=e7]: Vyberte si krabicu a začnite
@@ -18,7 +18,7 @@
       - button "SÚHLASÍM A OVERIŤ" [ref=e19]
     - generic:
       - generic:
-        - generic: 19:02
+        - generic: 19:44
         - generic: 📶 🔋
       - banner:
         - generic:

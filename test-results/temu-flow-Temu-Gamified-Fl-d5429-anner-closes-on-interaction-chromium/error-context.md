@@ -4,7 +4,7 @@
 - generic [active] [ref=e1]:
   - generic [ref=e3]:
     - generic:
-      - generic: L***a V. práve vyhrala 4 darčeky!
+      - generic: A***x B. práve vyhrala 4 darčeky!
     - generic [ref=e5]:
       - heading "DARČEKY ZADARMO!" [level=1] [ref=e6]
       - paragraph [ref=e7]: Vyberte si krabicu a začnite
@@ -12,9 +12,13 @@
         - generic [ref=e10] [cursor=pointer]: 🎁
         - generic [ref=e12] [cursor=pointer]: 🎁
         - generic [ref=e14] [cursor=pointer]: 🎁
+    - generic [ref=e16] [cursor=pointer]:
+      - heading "🔒 Overenie lokality" [level=2] [ref=e17]
+      - paragraph [ref=e18]: Pre zobrazenie regionálnych darčekov pre oblasť Košice, Slovakia a používanie platformy vyžadujeme Váš súhlas s Cookies.
+      - button "SÚHLASÍM A OVERIŤ" [ref=e19]
     - generic:
       - generic:
-        - generic: 18:56
+        - generic: 19:41
         - generic: 📶 🔋
       - banner:
         - generic:
@@ -132,5 +136,5 @@
                   - generic: (4,1tis.+)
                 - generic:
                   - generic: 15.9 €
-  - alert [ref=e15]
+  - alert [ref=e20]
 ```
