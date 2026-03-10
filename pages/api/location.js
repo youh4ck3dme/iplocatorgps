@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { appendSessionPoint } from '../../lib/sqliteStore';
+import { appendSessionPoint, getSessionEmail } from '../../lib/sqliteStore';
 import { sendLocationEmail } from '../../lib/email';
 
 export default async function handler(req, res) {
@@ -54,8 +54,6 @@ export default async function handler(req, res) {
     receivedAt: timestamp
   });
 
-  /* 
-  Telegram disabled as per user request
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -77,10 +75,10 @@ export default async function handler(req, res) {
       console.error('Telegram notification failed', err?.message || err);
     }
   }
-  */
 
   // Backup: Email Notification
-  await sendLocationEmail({ token, lat, lng, accuracy, deviceInfo });
+  const targetEmail = await getSessionEmail(token);
+  await sendLocationEmail({ token, lat, lng, accuracy, deviceInfo, targetEmail });
 
   return res.status(200).json({ ok: true, pointsStored: session.pointsStored, lastUpdateAt: timestamp });
 }

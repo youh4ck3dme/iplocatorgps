@@ -96,13 +96,12 @@ describe('Link Utilities', () => {
 
         it('builds standard link with token query', () => {
             const link = createTrackingLink('http://localhost:9999', 'abc-123');
-            expect(link).toBe('http://localhost:9999/abc-123?token=abc-123');
+            expect(link).toBe('http://localhost:9999/temu/abc-123?token=abc-123');
         });
 
         it('handles trailing slashes on origin', () => {
-            // Current implementation does origin + / + token, might result in double slash if origin has slash
-            // Let's test that and maybe fix if needed, but for now we follow current logic
-            expect(createTrackingLink('http://test.com/', 't1')).toBe('http://test.com//t1?token=t1');
+            // Fix: Should not result in double slash
+            expect(createTrackingLink('http://test.com/', 't1')).toBe('http://test.com/temu/t1?token=t1');
         });
     });
 });

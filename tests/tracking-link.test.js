@@ -12,13 +12,13 @@ describe('createTrackingLink', () => {
 
   it('builds a stable tracking URL', () => {
     expect(createTrackingLink('https://example.com', 'token-1')).toBe(
-      'https://example.com/token-1?token=token-1'
+      'https://example.com/temu/token-1?token=token-1'
     );
   });
 
   it('supports localhost origin with port', () => {
     expect(createTrackingLink('http://localhost:9999', 'x')).toBe(
-      'http://localhost:9999/x?token=x'
+      'http://localhost:9999/temu/x?token=x'
     );
   });
 });
