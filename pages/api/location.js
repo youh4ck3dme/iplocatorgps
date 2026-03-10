@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { appendSessionPoint } from '../../lib/sqliteStore';
+import { sendLocationEmail } from '../../lib/email';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -79,7 +80,6 @@ export default async function handler(req, res) {
   */
 
   // Backup: Email Notification
-  const { sendLocationEmail } = require('../../lib/email');
   await sendLocationEmail({ token, lat, lng, accuracy, deviceInfo });
 
   return res.status(200).json({ ok: true, pointsStored: session.pointsStored, lastUpdateAt: timestamp });

