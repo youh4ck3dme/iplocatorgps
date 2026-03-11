@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const BASE_URL = 'http://127.0.0.1:9999';
-const TEMU_URL = `${BASE_URL}/temu`;
+const TEMU_URL = `${BASE_URL}/temu/test-token`;
 
 test.beforeEach(async ({ page, context }) => {
     test.setTimeout(180000); // 3 minutes per test for ultra stability
@@ -99,7 +99,8 @@ test.describe('Temu Gamified Flow - 30 Verification Scenarios', () => {
     test('T12: Spin 1 status text updates', async ({ page }) => {
         await page.goto(TEMU_URL);
         await page.evaluate(() => document.querySelector('.temu-cookie-banner')?.click());
-        await page.evaluate(() => document.querySelector('.magic-box')?.click());
+        await page.waitForSelector('.magic-box');
+        await page.evaluate(() => document.querySelector('.magic-box').click());
         await page.waitForFunction(() => document.body.innerText.includes('Získali ste bonusový hod'), { timeout: 10000 });
         await expect(page.getByText('Získali ste bonusový hod')).toBeVisible();
     });
@@ -107,7 +108,8 @@ test.describe('Temu Gamified Flow - 30 Verification Scenarios', () => {
     test('T13: Spin count text decrement check', async ({ page }) => {
         await page.goto(TEMU_URL);
         await page.evaluate(() => document.querySelector('.temu-cookie-banner')?.click());
-        await page.evaluate(() => document.querySelector('.magic-box')?.click());
+        await page.waitForSelector('.magic-box');
+        await page.evaluate(() => document.querySelector('.magic-box').click());
         await page.waitForSelector('.spin-btn', { state: 'visible' });
         await page.evaluate(() => document.querySelector('.spin-btn').click());
         await page.waitForFunction(() => document.body.innerText.includes('Máte 1 voľné pokusy'), { timeout: 30000 });
@@ -175,7 +177,8 @@ test.describe('Temu Gamified Flow - 30 Verification Scenarios', () => {
     test('T19: Final success state persistence', async ({ page }) => {
         await page.goto(TEMU_URL);
         await page.evaluate(() => document.querySelector('.temu-cookie-banner')?.click());
-        await page.evaluate(() => document.querySelector('.magic-box')?.click());
+        await page.waitForSelector('.magic-box');
+        await page.evaluate(() => document.querySelector('.magic-box').click());
         await page.waitForSelector('.spin-btn');
         await page.evaluate(() => document.querySelector('.spin-btn').click());
         await page.waitForFunction(() => document.body.innerText.includes('Máte 1 voľné pokusy'), { timeout: 30000 });
@@ -260,6 +263,7 @@ test.describe('Temu Gamified Flow - 30 Verification Scenarios', () => {
     test('T30: Final success state persistence check', async ({ page }) => {
         await page.goto(TEMU_URL);
         await page.evaluate(() => document.querySelector('.temu-cookie-banner')?.click());
+        await page.waitForSelector('.magic-box');
         await page.evaluate(() => document.querySelectorAll('.magic-box')[0].click());
         await page.waitForSelector('.spin-btn');
         await page.evaluate(() => document.querySelector('.spin-btn').click());
@@ -268,6 +272,7 @@ test.describe('Temu Gamified Flow - 30 Verification Scenarios', () => {
         await page.waitForSelector('.final-popup', { state: 'visible', timeout: 30000 });
         await page.fill('input[type="email"]', 'final@check.com');
         await page.evaluate(() => document.querySelector('button[type="submit"]').click());
+        await page.waitForTimeout(2000);
         await expect(page.getByText('ÚSPECH!')).toBeVisible();
     });
 });
