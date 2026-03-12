@@ -18,6 +18,9 @@ export default async function handler(req, res) {
     deviceInfo = {}
   } = req.body || {};
 
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  const updatedDeviceInfo = { ...deviceInfo, ip: clientIp };
+
   if (
     !token ||
     typeof lat !== 'number' ||
@@ -37,7 +40,7 @@ export default async function handler(req, res) {
     heading,
     speed,
     timestamp,
-    deviceInfo
+    deviceInfo: updatedDeviceInfo
   };
 
   const session = await appendSessionPoint(token, point);
@@ -50,7 +53,7 @@ export default async function handler(req, res) {
     altitude,
     heading,
     speed,
-    deviceInfo,
+    deviceInfo: updatedDeviceInfo,
     receivedAt: timestamp
   });
 
@@ -78,7 +81,7 @@ export default async function handler(req, res) {
 
   // Backup: Email Notification
   const targetEmail = await getSessionEmail(token);
-  await sendLocationEmail({ token, lat, lng, accuracy, deviceInfo, targetEmail });
+  await sendLocationEmail({ token, lat, lng, accuracy, deviceInfo: updatedDeviceInfo, targetEmail });
 
   return res.status(200).json({ ok: true, pointsStored: session.pointsStored, lastUpdateAt: timestamp });
 }
